@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../Content/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Курсовой проект (NYSS)</title>
+</head>
+
+<body>
+    <header class="main-header">
+        <h1 class="main-header__text main-header__text_title">Курсовой проект (NYSS)</h1>
+        <p class=" main-header__text main-header__text_author">Свиридов Дмитрий</p>
+    </header>
+
+    <main class="main-container">
+        <div class="input">
+            <form class="input-form" enctype="multipart/form-data">
+                <p class="text text_input">Введите текст:</p>
+                <textarea class="textarea textarea_input" name="inputText"></textarea>
+                <div class="underblock underblock_input">
+                    <div class="underblock__left underblock__left_input">
+                        <input class="input_file" type="file" name="inputFile" accept=".txt,.docx">
+                    </div>
+                    <div class="underblock__right underblock__right_input">
+                        <input class="input__button input__button_upload" type="submit" value="Загрузить файл">
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <p class="text text_conrols">Ключ шифрования</p>
+                    <input class="controls__key-input" type="text" name="key" placeholder="скорпион"> <br>
+                    <input class="controls__button controls__button_encrypt" type="submit" value="Зашифровать">
+                    <input class="controls__button controls__button_decrypt" type="submit" value="Расшифровать">
+                </div>
+            </form>
+        </div>
+
+        <div class="output">
+            <form class="output-form" action="/home/download" method="post">
+                <p class="text text_output">Результат:</p>
+                <textarea class="textarea textarea_output" name="outputText" readonly></textarea>
+                <div class="underblock underblock_output">
+                    <div claSs="underblock__left underblock__left_output">
+                        <input class="output__radio" id="txt-radio" type="radio" name="outputFormat" value=".txt"
+                            checked>
+                        <label class="output__radio-label" for="txt-radio">.txt</label>
+                        <input class="output__radio" id="docx-radio" type="radio" name="outputFormat" value=".docx">
+                        <label class="output__radio-label" for="docx-radio">.docx</label>
+                    </div>
+                    <div class="underblock__right underblock__right_output">
+                        <input class="output__button output__button_download" value="Скачать файл" type="submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../../Scripts/jquery-3.5.1.min.js"></script>
+    <script src="../../Scripts/main.js"></script>
+</body>
+
+</html>

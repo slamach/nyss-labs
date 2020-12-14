@@ -1,0 +1,128 @@
+﻿<Window x:Class="ParserApp.Views.MainWindow"
+        x:Name="winMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Parser App - NowYouSeeSharp"
+        Height="450"
+        Width="800"
+        Icon="../Resources/Images/icon.ico"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="800"
+        MinHeight="450">
+    <Grid ShowGridLines="True">
+        <DockPanel LastChildFill="True" Background="#f0f0f0">
+            <Grid DockPanel.Dock="Top" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="btnPreviousPage" Grid.Column="0" Content="&lt;-" Width="30" Padding="3"
+                        Margin="0 0 5 0" Click="btnPreviousPage_Click" VerticalAlignment="Center" />
+                <Button x:Name="btnNextPage" Grid.Column="1" Content="->" Width="30" Padding="3"
+                        Margin="0 0 5 0" Click="btnNextPage_Click" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="2" Text="{Binding Path = CurrentPage, StringFormat=' {0} страница'}"
+                           VerticalAlignment="Center" />
+                <Button x:Name="btnUpdate" Grid.Column="4" Content="Обновить" Padding="3"
+                        Click="btnUpdate_Click" VerticalAlignment="Center" />
+            </Grid>
+
+            <Grid DockPanel.Dock="Bottom" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="1" Margin="0 0 5 0" VerticalAlignment="Center">Угроз на странице: </TextBlock>
+                <ComboBox x:Name="cboItemsPerPage" Grid.Column="2" ItemsSource="{Binding Path = ItemsPerPageList}"
+                          SelectedItem="{Binding Path = ItemsPerPage}" SelectionChanged="cboItemsPerPage_SelectionChanged"
+                          Padding="5 3" VerticalAlignment="Center" />
+            </Grid>
+
+            <DataGrid x:Name="dgThreatsList"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      BorderThickness="0"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      VirtualizingPanel.ScrollUnit="Pixel"
+                      PreviewMouseDown="dgThreatsList_PreviewMouseDown"
+                      CanUserResizeColumns="False"
+                      CanUserReorderColumns="False"
+                      CanUserSortColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Идентификатор угрозы"
+                                            Binding="{Binding Path = Id, StringFormat = УБИ.{0}}"
+                                            Width="180" />
+                    <DataGridTextColumn Header="Наименование угрозы"
+                                            Binding="{Binding Path = Name}"
+                                            Width="*" />
+                </DataGrid.Columns>
+
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock Text="Описание угрозы:" FontWeight="Bold" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Path = Description}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Источник угрозы:" FontWeight="Bold" TextWrapping="Wrap" Margin="0 5 0 0" />
+                            <TextBlock Text="{Binding Path = Source}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Объект взаимодействия угрозы:" FontWeight="Bold" TextWrapping="Wrap" Margin="0 5 0 0" />
+                            <TextBlock Text="{Binding Path = Target}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Нарушение конфидециальности:" FontWeight="Bold" TextWrapping="Wrap" Margin="0 5 0 0" />
+                            <TextBlock Text="{Binding Path = ConfViolated}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Нарушение целостности:" FontWeight="Bold" TextWrapping="Wrap" Margin="0 5 0 0" />
+                            <TextBlock Text="{Binding Path = IntegViolated}" TextWrapping="Wrap" />
+
+                            <TextBlock Text="Нарушение доступности:" FontWeight="Bold" TextWrapping="Wrap" Margin="0 5 0 0" />
+                            <TextBlock Text="{Binding Path = AccessViolated}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+
+            <Popup x:Name="popUpdate" Width="300" StaysOpen="False" Placement="Center">
+                <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="5">
+                    <StackPanel Background="White">
+                        <TextBlock Foreground="#0CCF0C" FontWeight="Bold" HorizontalAlignment="Center">Обновление прошло успешно</TextBlock>
+                        <TextBlock Text="{Binding ThreatsAdded, StringFormat='Добавлено угроз: {0}'}" Margin="0 5 0 5"  />
+                        <TextBlock Text="{Binding ThreatsUpdated, StringFormat='Обновлено угроз: {0}'}" Margin="0 0 0 5" />
+                        <TextBlock Margin="0 0 0 5">Изменения:</TextBlock>
+                        <ListView x:Name="lvUpdateResults" MaxHeight="200"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  VirtualizingPanel.ScrollUnit="Pixel">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" FontWeight="Bold">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="УБИ.{0} - {1}:">
+                                                    <Binding Path="Id" />
+                                                    <Binding Path="Field" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="Было:" />
+                                        <TextBlock Text="{Binding Path = PreviousValue}" TextWrapping="Wrap" />
+                                        <TextBlock Text="Стало:" />
+                                        <TextBlock Text="{Binding Path = CurrentValue}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </DockPanel>
+    </Grid>
+</Window>
